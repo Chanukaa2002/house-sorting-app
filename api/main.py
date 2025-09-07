@@ -14,14 +14,17 @@ def after_request(response):
     response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
     return response
 
-# Load the trained model
+MODEL_PATH = os.path.join(os.path.dirname(__file__), "..", "house_sorting_model.pkl")
+
+model = None
 try:
-    with open('../house_sorting_model.pkl', 'rb') as f:
+    with open(MODEL_PATH, "rb") as f:
         model = pickle.load(f)
-    print("Model loaded successfully!")
+    print("✅ Model loaded successfully!")
 except FileNotFoundError:
-    print("Model file not found. Please ensure 'house_sorting_model.pkl' exists in the parent directory.")
-    model = None
+    print(f"❌ Model file not found at {MODEL_PATH}. Please ensure it exists in the repo root.")
+except Exception as e:
+    print(f"⚠️ Error loading model: {e}")
 
 # Define the feature names in the correct order (as they were in training)
 FEATURE_NAMES = [
